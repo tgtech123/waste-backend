@@ -3,6 +3,9 @@ const mongoose = require('mongoose')
 const User = require('./models/user')
 const bcrypt = require("bcrypt")
 const cors = require("cors")
+const requestRoute = require('./routes/requestRoute')
+const locationRoute = require('./routes/locationRoute')
+
 
 const app = express()
 // database uri
@@ -13,6 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors())
+
+app.use("/request", requestRoute)
+app.use("/location", locationRoute)
+
+
+
  
 app.get("/", (req, res) => {  
     res.send("hello world")
@@ -26,7 +35,7 @@ app.post("/register", async(req, res) =>{
  
 
    // checking if email already exist
-     if(!emailexist) {
+     if(!emailexist) { 
          //password hashing
          const saltRound = 10
          const hashedPassword = await bcrypt.hash(password, saltRound)
@@ -35,7 +44,7 @@ app.post("/register", async(req, res) =>{
          await User.create({
              name, phone, dob, password: hashedPassword, email 
          })
-     
+    
          return res.status(201).json({message: 'User created successfully'});
          
     } else {
@@ -44,7 +53,7 @@ app.post("/register", async(req, res) =>{
    
     } catch (error) { 
        console.log(error) 
-    } 
+    }
 }) 
 
 app.get("/register", async(req, res) => {
